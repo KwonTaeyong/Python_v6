@@ -1,0 +1,440 @@
+
+.upload__box {
+    padding: 30px;
+    user-select: none;
+}
+
+.bi-images {
+    font-size: 110px;
+    color: grey;
+    margin-left: 17px;
+}
+
+.upload__inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.upload__btn {
+    display: inline-block;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 3px dotted;
+    border-color: #4ac1f7;
+    border-radius: 10px;
+    line-height: 26px;
+    font-size: 14px;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.upload__btn-box {
+    margin-right: 20px;
+    margin-left: 0px;
+}
+
+.upload__img-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -15px 0px;
+}
+
+.upload__img-box {
+    width: 200px;
+    padding: 0 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.upload__img-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    line-height: 24px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.upload__img-close:after {
+    content: "✖";
+    font-size: 14px;
+    color: white;
+}
+
+.img-bg {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    object-fit: cover;
+    position: relative;
+    padding-bottom: 100%;
+}
+
+.navbar {
+    background-color: rgb(70, 177, 255);;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+#btnUp {
+    background-color: #4ac1f7;
+    border: 1px solid #4ac1f7;
+    border-radius: 35px;
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    opacity: .8;
+    font-size: 40px;
+    color: #fff;
+    transition: .2s linear;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+#btnUp:hover {
+    opacity: 1;
+}
+
+#btnUp:focus {
+    outline: none;
+}
+
+#myModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2;
+}
+
+#upload_img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+}
+
+#modalImg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+}
+
+
+/* 모바일 스타일 */
+@media screen and (max-width: 480px) {
+    /* 화면 너비가 768px 이하인 경우에만 적용되는 스타일 */
+    body {
+        background-color: white;
+    }
+
+
+    .upload__btn {
+        display: inline-block;
+        font-weight: 600;
+        color: #fff;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px dotted;
+        border-color: #4ac1f7;
+        background-color: white;
+        border-radius: 10px;
+        line-height: 26px;
+        font-size: 14px;
+        width: 80px;
+        height: 80px;
+        padding: 0 10px;
+        margin-left: 0;
+    }
+
+
+    .upload__btn-box {
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+
+    .upload__img-box {
+        width: 100px;
+        padding: 0 10px;
+        cursor: pointer;
+    }
+
+    .upload__img-close {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        text-align: center;
+        line-height: 24px;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    #upload_img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .bi-images {
+        font-size: 50px;
+        color: grey;
+        margin-left: 3px;
+    }
+
+    #upload-text {
+        display: none;
+    }
+
+    #upload-icon {
+        font-size: 25px;
+    }
+
+    #btnUp {
+        background-color: #4ac1f7;
+        border: 1px solid #4ac1f7;
+        border-radius: 35px;
+        width: 60px;
+        height: 60px;
+        position: fixed;
+        bottom: 50px;
+        right: 20px;
+        opacity: .8;
+        font-size: 40px;
+        color: #fff;
+        transition: .2s linear;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+
+    #btnUp:hover {
+        opacity: 3;
+    }
+
+    #btnUp:focus {
+        outline: none;
+    }
+
+    #upload-icon {
+        font-size: 25px;
+    }
+
+    #upload-text {
+        display: none;
+    }
+
+}
+
+
+/*--------------------로딩화면--------------------*/
+.loading {
+    /*사원*/
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /*display: none;*/
+    display: flex;
+}
+
+.loading > div {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    top: -5%;
+}
+
+.nemo {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nemo > div {
+    width: 35px;
+    height: 35px;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+.nemo:nth-child(1) {
+    top: 0;
+    left: 0;
+    animation: twodong1 3s ease-out infinite;
+}
+
+.nemo:nth-child(2) {
+    top: 0;
+    left: 40px;
+    animation: twodong2 3s ease-out infinite;
+}
+
+.nemo:nth-child(3) {
+    top: 40px;
+    left: 0;
+    animation: twodong3 3s ease-out infinite;
+}
+
+.nemo:nth-child(4) {
+    top: 40px;
+    left: 40px;
+    animation: twodong4 3s ease-out infinite;
+}
+
+@keyframes twodong1 {
+    0% {
+        top: 0px;
+        left: 0px;
+        /*border-radius: 100% 0 0 0;*/
+    }
+    25% {
+        top: 0px;
+        left: 40px;
+        /*border-radius: 0 100% 0 0;*/
+    }
+    50% {
+        top: 40px;
+        left: 40px;
+        /*border-radius: 0 0 100% 0;*/
+    }
+    75% {
+        top: 40px;
+        left: 0px;
+        /*border-radius: 0 0 0 100%;*/
+    }
+    100% {
+        top: 0px;
+        left: 0px;
+        /*border-radius: 100% 0 0 0;*/
+    }
+}
+
+@keyframes twodong2 {
+    0% {
+        top: 0px;
+        left: 40px;
+        /*border-radius: 0 100% 0 0;*/
+    }
+    25% {
+        top: 40px;
+        left: 40px;
+        /*border-radius: 0 0 100% 0;*/
+    }
+    50% {
+        top: 40px;
+        left: 0px;
+        /*border-radius: 0 0 0 100%;*/
+    }
+    75% {
+        top: 0px;
+        left: 0px;
+        /*border-radius: 100% 0 0 0;*/
+    }
+    100% {
+        top: 0px;
+        left: 40px;
+        /*border-radius: 0 100% 0 0;*/
+    }
+}
+
+@keyframes twodong3 {
+    0% {
+        top: 40px;
+        left: 40px;
+        /*border-radius: 0 0 100% 0;*/
+    }
+    25% {
+        top: 40px;
+        left: 0px;
+        /*border-radius: 0 0 0 100%;*/
+    }
+    50% {
+        top: 0px;
+        left: 0px;
+        /*border-radius: 100% 0 0 0;*/
+    }
+    75% {
+        top: 0px;
+        left: 40px;
+        /*border-radius: 0 100% 0 0;*/
+    }
+    100% {
+        top: 40px;
+        left: 40px;
+        /*border-radius: 0 0 100% 0;*/
+    }
+}
+
+@keyframes twodong4 {
+    0% {
+        top: 40px;
+        left: 0px;
+        /*border-radius: 0 0 0 100%;*/
+    }
+    25% {
+        top: 0px;
+        left: 0px;
+        /*border-radius: 100% 0 0 0;*/
+    }
+    50% {
+        top: 0px;
+        left: 40px;
+        /*border-radius: 0 100% 0 0;*/
+    }
+    75% {
+        top: 40px;
+        left: 40px;
+        /*border-radius: 0 0 100% 0;*/
+    }
+    100% {
+        top: 40px;
+        left: 0px;
+        /*border-radius: 0 0 0 100%;*/
+    }
+}
+

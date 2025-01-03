@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- IMAGE TOP -->
+    <nav class="navbar"
+         style="background-color: #4ac1f7; text-align: center; display: flex; align-items: center; justify-content: space-between; height: 80px;">
+
+        {#    <button id="back-btn" style="margin-right: auto; margin-left: 5px; border: none; background-color: #4ac1f7;" onclick="history.back()">#}
+        <button id="back-btn" style="margin-right: auto; margin-left: 5px; border: none; background-color: #4ac1f7;">
+            <i style="font-size: 25px; color: white" class="bi bi-chevron-left"></i>
+        </button>
+
+        <div class="navbar-text"
+             style="color: white; font-weight: bold; font-size: 17px; margin-left: 10px; margin-bottom: -10px; display: flex; align-items: center;">
+            <span style="text-align: center; padding-bottom: 1rem">AS 사진 등록<br> ( {{ ss_no }} ) </span>
+        </div>
+
+        <button id="upload-btn"
+                style="margin-left: auto; margin-right: 5px; border: none; background-color: #4ac1f7; color: white">
+            <a id="upload-text" style="text-decoration: none; color: white">등록</a>
+            <i id="upload-icon" class="bi bi-upload"></i>
+        </button>
+    </nav>
+    <!-- IMAGE TOP -->
+
+    <!-- IMAGE LIST -->
+    <div>
+        <div
+                style="margin-left: 40px; margin-right: 40px; padding-top: 20px; font-weight: bold; border-bottom: solid 1px black">
+            <span id="total_cnt">총 0 장</span>
+            <span>
+            ( 10MB 이하 / 1회 최대 40장 )
+        </span>
+        </div>
+    </div>
+
+    <form id="searchForm" method="get" action="{% url 'imglist' %}">
+        <input type="hidden" id="ss_uuid" name="ss_uuid" value="{{ ss_uuid }}">
+        <input type="hidden" id="ss_no" name="ss_no" value="{{ ss_no }}">
+        <input type="hidden" id="ss_no" name="ss_user" value="{{ ss_user }}">
+    </form>
+
+    <form id="img-file-form" method="post" action="{% url 'imgupload' %}"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        <input id="upfile" name="file" type="file" multiple data-max_files="40" accept="image/*" hidden>
+        <input name="ss_no" value="{{ ss_no }}" hidden>
+        <input name="ss_uuid" value="{{ ss_uuid }}" hidden>
+        <input name="ss_user" value="{{ ss_user }}" hidden>
+    </form>
+
+
+    <div>
+        <div class="upload__box">
+            <div class="upload__img-wrap" id="carousel-container">
+                <div class="upload__btn-box">
+                    <label class="upload__btn" style="display: flex; align-items: center;">
+                        <i id="image-icon" style="color: #4ac1f7" class="bi bi-images"></i>
+                        <input id="file" name="file" type="file" multiple data-max_files="40"
+                               class="upload__inputfile" accept="image/*">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- IMAGE LIST -->
+
+    <!-- IMAGE FULL -->
+    <div id="myModal" class="modal">
+        <img class="modal-content" id="modalImg">
+        <span class="prev" onclick="plusSlides(-1)">&#10094;</span>
+        <span class="next" onclick="plusSlides(1)">&#10095;</span>
+        <span class="close" onclick="closeModal()">&#10005;</span>
+    </div>
+
+    <!-- IMAGE FULL -->
+
+    <div class="loading" style="display: none;">
+        <div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#back-btn').on('click', function () {
+            $('#searchForm').submit()
+        })
+
+        let slideIndex = 1;
+
+        $(document).ready(function () {
+            $("#upfile").val("")
+            $("#total_cnt").html(function (_, html) {
+                return html.replace(/\d+/g, '<span class="highlight" style="color: #BE3144">$&</span>');
+            });
+        })
+
+        jQuery(document).ready(function () {
+            ImgUploadTemp();
+        });
+
+        $('#upload-btn').on('click', function () {
+            if ($('.upload__img-box').length === 0) {
+                alert("선택 한 사진이 없습니다.")
+            } else {
+
+                var total_text = String($('.upload__img-box').length)
+                if (confirm("총 " + total_text + "장을 등록하시겠습니까?")) {
+                    $(".loading").show()
+
+                    let current_files = document.querySelector(".upload__inputfile").files
+                    var slice_files = Array.from(current_files).slice(0, 10)
+
+                    const dataTransfer = new DataTransfer();
+                    slice_files.forEach(file => dataTransfer.items.add(file));
+                    document.querySelector(".upload__inputfile").files = dataTransfer.files
+
+                    $('#img-file-form').submit()
+                } else {
+                    return false;
+                }
+            }
+        })
+
+        $("#file").on('click', function (e) {
+            if ($('.upload__img-box').length === 40) {
+                alert('한 번에 등록할 수 있는 최대 사진 수는 40장입니다.')
+                return false
+            }
+        })
+
+        function ImgUploadTemp() {
+            var imgWrap = "";
+            var imgArray = [];
+
+
+            $('.upload__inputfile').each(function () {
+                $(this).on('change', function (e) {
+                    console.log(e)
+                    imgWrap = $(this).closest('.upload__box').find('.upload__img-wrap');
+                    var maxFiles = $(this).attr('data-max_files');
+                    var currentFiles = $(".upload__img-box").length
+                    var filesArr = Array.from(this.files).slice(0, maxFiles - currentFiles)
+                    console.log(filesArr)
+                    var iterator = 0;
+                    filesArr.forEach(function (f, index) {
+                        if (f.size > 10 * 1024 * 1024) {
+                            alert("파일 크기는 10MB를 초과할 수 없습니다.");
+                            return;
+                        }
+                        if (!f.type.match('image.*')) {
+                            alert("사진 파일만 등록 할 수 있습니다.")
+                            return;
+                        }
+
+                        if (imgArray.length >= maxFiles) {
+                            return false
+                        } else {
+                            var len = 0;
+                            for (var i = 0; i < imgArray.length; i++) {
+                                if (imgArray[i] !== undefined) {
+                                    len++;
+                                }
+                            }
+                            if (len > maxFiles) {
+                                return false;
+                            } else {
+                                imgArray.push(f);
+
+                                var reader = new FileReader();
+                                reader.onload = function (e) {
+                                    const img = new Image();
+                                    img.src = e.target.result;
+                                    img.onload = function () {
+                                        const canvas = document.createElement('canvas');
+                                        const ctx = canvas.getContext('2d');
+
+                                        const maxDimension = 1920; // 최대 가로 또는 세로 길이
+                                        let width = img.width;
+                                        let height = img.height;
+
+                                        if (width > height) {
+                                            if (width > maxDimension) {
+                                                height *= maxDimension / width;
+                                                width = maxDimension;
+                                            }
+                                        } else {
+                                            if (height > maxDimension) {
+                                                width *= maxDimension / height;
+                                                height = maxDimension;
+                                            }
+                                        }
+
+                                        canvas.width = width;
+                                        canvas.height = height;
+                                        ctx.drawImage(img, 0, 0, width, height);
+                                        const dataUrl = canvas.toDataURL('image/jpeg');
+
+                                        var html = "<div class='upload__img-box'><div style='background-image: url(" + dataUrl + ")' data-number='" + $(".upload__img-close").length + "' data-file='" + f.name + "' class='img-bg'><div class='upload__img-close'></div></div></div>";
+
+                                        var blob = dataURLtoBlob(dataUrl);
+                                        addFileItem(blob)
+                                        imgWrap.append(html);
+                                        iterator++;
+                                    }
+                                }
+                                reader.readAsDataURL(f);
+                            }
+                        }
+
+                    });
+                    $('#file').val('')
+                });
+            });
+
+            function dataURLtoBlob(dataUrl) {
+                var arr = dataUrl.split(',');
+                var mime = arr[0].match(/:(.*?);/)[1];
+                var bstr = atob(arr[1]);
+                var n = bstr.length;
+                var u8arr = new Uint8Array(n);
+
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+
+                return new Blob([u8arr], {type: mime});
+            }
+
+            $('.upload__inputfile').on('change', function (e) {
+                updateTotalCount()
+            });
+
+            function addFileItem(newFile) {
+                const dataTransfer = new DataTransfer();
+                let preFiles = $('#upfile')[0].files;	//사용자가 입력한 파일을 변수에 할당
+                let preFilesArray = Array.from(preFiles)
+                preFilesArray.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+                dataTransfer.items.add(new File([newFile], "image.jpg", {type: "image/jpeg"}));
+                $('#upfile')[0].files = dataTransfer.files;	//제거 처리된 FileList를 돌려줌
+            }
+
+            function imgDel(fileNum) {
+                const dataTransfer = new DataTransfer();
+                let files = $('#upfile')[0].files;	//사용자가 입력한 파일을 변수에 할당
+                let fileArray = Array.from(files);	//변수에 할당된 파일을 배열로 변환(FileList -> Array)
+                fileArray.splice(fileNum, 1);	//해당하는 index의 파일을 배열에서 제거
+                fileArray.forEach(file => {
+                    dataTransfer.items.add(file);
+                });  //남은 배열을 dataTransfer로 처리(Array -> FileList)
+                $('#upfile')[0].files = dataTransfer.files;	//제거 처리된 FileList를 돌려줌
+            }
+
+            // 사진 삭제 이벤트
+            $('body').on('click', ".upload__img-close", function (e) {
+                e.stopPropagation(); // 이벤트 전파 방지
+                var file = $(this).parent().data("file");
+                for (var i = 0; i < imgArray.length; i++) {
+                    if (imgArray[i].name === file) {
+                        imgDel(i)
+                        imgArray.splice(i, 1);
+                        break;
+                    }
+                }
+                $(this).parent().fadeOut(400, function () {
+                    $(this).parent().remove();
+                });
+                var total_text = String($('.upload__img-box').length - 1)
+                $("#total_cnt").text("총 " + total_text + " 장");
+                textcc()
+            });
+
+
+            // 사진 클릭 시 모달 열기 이벤트
+            $(document).on('click', '.upload__img-box', function (e) {
+                e.stopPropagation(); // 이벤트 전파 방지
+                var imgSrc = $(this).find('.img-bg').css('background-image');
+                imgSrc = imgSrc.replace(/url\(['"]?([^'"]*)['"]?\)/i, '$1');
+                $('#modalImg').attr('src', imgSrc);
+                $('#myModal').css('display', 'flex'); // 모달 열기
+            });
+
+            // 모달 닫기 이벤트
+            $('#myModal').on('click', function () {
+                closeModal();
+            });
+
+            function updateTotalCount() {
+                $("#total_cnt").text("총 " + imgArray.length + " 장");
+                textcc()
+            }
+
+            function closeModal() {
+                $('#myModal').css('display', 'none'); // 모달 닫기
+            }
+
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+
+            function showSlides(n) {
+                let slides = $('.upload__img-box');
+                if (n > slides.length) {
+                    slideIndex = 1
+                }
+                if (n < 1) {
+                    slideIndex = slides.length
+                }
+                $('#modalImg').attr('src', slides[slideIndex - 1].querySelector('.img-bg').style.backgroundImage.slice(5, -2));
+            }
+
+            function textcc() {
+                $("#total_cnt").html(function (_, html) {
+                    return html.replace(/\d+/g, '<span class="highlight" style="color: #BE3144">$&</span>');
+                });
+            }
+        }
+    </script>
+
+{% endblock %}

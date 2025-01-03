@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div class="loading">
+        <div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+            <div class="nemo">
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- IMAGE TOP -->
+    <nav class="navbar"
+         style="background-color: #4ac1f7; text-align: center; display: flex; align-items: center; height: 80px;">
+
+        <div style="margin-left: auto; margin-right: auto;">
+            <div class="navbar-text"
+                 style="color: white; font-weight: bold; font-size: 17px; text-align: center; display: flex; align-items: center;">
+                <span style="padding-left: 3.7rem">AS 사진 조회<br> ( {{ ss_no }} ) </span>
+            </div>
+        </div>
+
+        <button class="upload-btn" id="upload-btn"
+                style="margin-right: 10px; border: none; background-color: #4ac1f7; color: white">
+            <div id="upload-text" style="color: white; text-decoration: none;">사진등록</div>
+            <i id="upload-icon" class="bi bi-zoom-in"></i>
+{#            <i id="upload-icon" class="bi bi-plus-circle-fill"></i>#}
+        </button>
+    </nav>
+    <!-- IMAGE TOP -->
+
+
+    <!-- IMAGE LIST -->
+    <div>
+        <div id="total_cnt"
+             style="margin-left: 40px; margin-right: 40px; padding-top: 20px; font-weight: bold; border-bottom: solid 1px black">
+            총 0 장
+        </div>
+    </div>
+    <div id="null-error"
+         style="text-align: center; height: 300px;  display: flex; align-items: center; justify-content: center; display: none; margin-top: 100px;">
+        <span style="color: red">등록 된 사진이 없습니다&nbsp;<i class="bi bi-exclamation-circle"></i></span>
+    </div>
+
+    <form id="searchForm" method="get" action="{% url 'imgupload' %}">
+        <input type="hidden" id="ss_uuid" name="ss_uuid" value="{{ ss_uuid }}">
+        <input type="hidden" id="ss_no" name="ss_no" value="{{ ss_no }}">
+        <input type="hidden" id="ss_no" name="ss_user" value="{{ ss_user }}">
+    </form>
+
+
+    <div>
+        <div class="upload__box">
+            <div class="upload__img-wrap" id="carousel-container">
+                {% for image_data in image_datas %}
+                    <div class='upload__img-box'>
+                        <img id="upload_img" style="object-fit: cover" src="data:image/jpeg;base64,{{ image_data }}"
+                             alt="My Image">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <button class="upload-btn" id="btnUp" type="button">
+        <div><i style="color: white; margin-top: 5px;"
+                class="bi bi-plus-circle"></i></div>
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        let slideIndex = 1;
+
+
+        $('.upload-btn').on('click', function () {
+            $('#searchForm').submit()
+        })
+
+        $(document).ready(function () {
+            if ($(".upload__img-box").length === 0) {
+                $("#null-error").show()
+            } else {
+                $("#null-error").hide()
+            }
+
+            let total_cnt = $('.upload__img-box').length
+            if (!total_cnt) {
+                $("#null-error").show()
+            }
+            var total_text = String($('.upload__img-box').length)
+            $("#total_cnt").text("총 " + total_text + " 장");
+
+            $("#total_cnt").html(function (_, html) {
+                return html.replace(/\d+/g, '<span class="highlight" style="color: #BE3144">$&</span>');
+            });
+
+            $(".loading").hide()
+        })
+
+        // 이미지 클릭 시 모달 열기 이벤트
+        $(document).on('click', '.upload__img-box', function (e) {
+            e.stopPropagation(); // 이벤트 전파 방지
+            var imgSrc = $(this).find('img').attr('src');
+            $('#modalImg').attr('src', imgSrc);
+            $('#myModal').css('display', 'block');
+        });
+
+        // 모달 닫기 이벤트
+        $('#myModal').on('click', function () {
+            closeModal();
+        });
+
+        // 닫기 버튼 클릭 시 모달 닫기
+        $('.close').on('click', function () {
+            closeModal();
+        });
+
+        // 모달 닫기 함수
+        function closeModal() {
+            $('#myModal').css('display', 'none');
+        }
+    </script>
+{% endblock %}

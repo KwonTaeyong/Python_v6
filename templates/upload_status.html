@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<form id="redirectForm" method="get" action="{% url 'imglist' %}">
+    <input type="hidden" id="ss_uuid" name="ss_uuid" value="{{ ss_uuid }}">
+    <input type="hidden" id="ss_no" name="ss_no" value="{{ ss_no }}">
+    <input type="hidden" id="ss_no" name="ss_user" value="{{ ss_user }}">
+</form>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        redirectForm = document.getElementById("redirectForm")
+        if ({{ status }}) {
+            redirectForm.action = "{% url 'imglist' %}"
+        } else {
+            redirectForm.action = "{% url 'imgupload' %}"
+        }
+        alert("{{ message }}")
+        redirectForm.submit()
+    });
+</script>
+{% endblock %}
